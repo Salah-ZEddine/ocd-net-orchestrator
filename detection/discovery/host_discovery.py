@@ -187,12 +187,7 @@ class ReliableNetworkScanner:
         return open_ports
 
     def detect_os(self, ip):
-        """Simple OS detection - only if host has open ports"""
-        # Only do OS detection if we found open ports to save time
-        return "Not scanned"  # Remove this to enable OS detection
         
-        # Uncomment below if you want OS detection:
-        """
         self.log(f"Detecting OS for {ip}", "OS_DETECTION")
         
         temp_file = f"/tmp/nmap_os_{self.scan_id}_{ip.replace('.', '_')}.xml"
@@ -221,7 +216,6 @@ class ReliableNetworkScanner:
                 os.remove(temp_file)
         
         return "Unknown"
-        """
 
     def scan_single_host(self, ip):
         """Complete scan for a single host - only report confirmed information"""
@@ -340,14 +334,13 @@ class ReliableNetworkScanner:
             print("-" * 60)
             for device in self.scan_results:
                 ports_info = f"{device['port_count']} open ports" if device['port_count'] > 0 else "No open ports"
-                print(f"  {device['ip_address']:15} | {device['hostname'][:20]:20} | {device['mac_address']:17} | {ports_info}")
+                print(f"  {device['ip_address']:15} | {ports_info}")
         
         return results
 
 def main():
     """Main function"""
     if len(sys.argv) != 2:
-        print("Reliable Network Scanner - No False Positives")
         print("Usage: sudo python3 network_scanner.py <subnet>")
         print("Example: sudo python3 network_scanner.py 192.168.1.0/24")
         sys.exit(1)
@@ -366,8 +359,7 @@ def main():
     results = scanner.run_scan()
     
     if results:
-        print(f"\n✨ Reliable network scan completed!")
-        print(f"📈 Only confirmed active hosts reported")
+        print(f"\n✨  network scan completed!")
     else:
         print(f"\n💥 No active hosts found in the target subnet!")
 

@@ -1,0 +1,151 @@
+{
+  "scan_metadata": {
+    "scan_id": "7ad6fdd1",
+    "start_time": "2025-11-17T16:42:43.648007",
+    "end_time": "2025-11-17T16:42:47.925602",
+    "duration_seconds": 4.277437,
+    "subnet_scanned": "192.168.100.0/24",
+    "hosts_discovered": 9,
+    "scan_reliability": "High - No false positives"
+  },
+  "network_devices": [
+    {
+      "id": "91053d74",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:46.891226",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.11",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    },
+    {
+      "id": "e1c601b3",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:46.943318",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.12",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [
+        {
+          "port": 21,
+          "service": "ftp",
+          "protocol": "tcp"
+        }
+      ],
+      "port_count": 1,
+      "status": "Active"
+    },
+    {
+      "id": "50361e15",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:46.944572",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.14",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [
+        {
+          "port": 3306,
+          "service": "mysql",
+          "protocol": "tcp"
+        }
+      ],
+      "port_count": 1,
+      "status": "Active"
+    },
+    {
+      "id": "7d4c98d6",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:46.960087",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.13",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [
+        {
+          "port": 25,
+          "service": "smtp",
+          "protocol": "tcp"
+        }
+      ],
+      "port_count": 1,
+      "status": "Active"
+    },
+    {
+      "id": "2829ea39",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:47.012045",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.10",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [
+        {
+          "port": 80,
+          "service": "http",
+          "protocol": "tcp"
+        }
+      ],
+      "port_count": 1,
+      "status": "Active"
+    },
+    {
+      "id": "0912416f",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:47.053839",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.17",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    },
+    {
+      "id": "97617ab9",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:47.073958",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.16",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    },
+    {
+      "id": "3095fca4",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:47.219680",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.15",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [
+        {
+          "port": 5432,
+          "service": "postgresql",
+          "protocol": "tcp"
+        }
+      ],
+      "port_count": 1,
+      "status": "Active"
+    },
+    {
+      "id": "fa4ca37d",
+      "scan_id": "7ad6fdd1",
+      "timestamp": "2025-11-17T16:42:47.923036",
+      "hostname": "Unknown",
+      "ip_address": "192.168.100.1",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    }
+  ]
+}
