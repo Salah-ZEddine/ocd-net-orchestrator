@@ -1,4 +1,5 @@
-python-nmap
-loguru
-scapy
-tqdm
+loguru==0.7.3
+netaddr==1.3.0
+python-nmap==0.7.1
+scapy==2.6.1
+tqdm==4.67.1
