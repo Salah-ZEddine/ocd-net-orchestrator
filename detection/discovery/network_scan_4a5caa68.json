@@ -1,0 +1,49 @@
+{
+  "scan_metadata": {
+    "scan_id": "4a5caa68",
+    "start_time": "2025-11-17T16:23:35.732487",
+    "end_time": "2025-11-17T16:24:26.633701",
+    "duration_seconds": 50.90011,
+    "subnet_scanned": "192.168.116.0/24",
+    "hosts_discovered": 3,
+    "scan_reliability": "High - No false positives"
+  },
+  "network_devices": [
+    {
+      "id": "69d50449",
+      "scan_id": "4a5caa68",
+      "timestamp": "2025-11-17T16:24:24.275190",
+      "hostname": "Unknown",
+      "ip_address": "192.168.116.129",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    },
+    {
+      "id": "4b0b4db9",
+      "scan_id": "4a5caa68",
+      "timestamp": "2025-11-17T16:24:26.580888",
+      "hostname": "Unknown",
+      "ip_address": "192.168.116.1",
+      "mac_address": "Unknown",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    },
+    {
+      "id": "def0f1c6",
+      "scan_id": "4a5caa68",
+      "timestamp": "2025-11-17T16:24:26.616277",
+      "hostname": "Unknown",
+      "ip_address": "192.168.116.254",
+      "mac_address": "00:50:56:EB:99:3E",
+      "operating_system": "Not scanned",
+      "open_ports": [],
+      "port_count": 0,
+      "status": "Active"
+    }
+  ]
+}
