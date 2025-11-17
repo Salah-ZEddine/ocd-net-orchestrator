@@ -15,6 +15,8 @@ from pathlib import Path
 from typing import List, Dict
 from loguru import logger
 import time
+from detection.utils.storage import JSONStorage
+from detection.utils.arpResultParser import ARPResultParser
 
 # Optional imports (scapy and nmap)
 try:
@@ -33,21 +35,9 @@ from netaddr import IPNetwork
 
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(exist_ok=True)
+storage = JSONStorage(output_dir=DATA_DIR, prefix="discovery")
+parser = ARPResultParser()
 
-def _save_json(data: dict, outdir: Path = DATA_DIR) -> Path:
-    timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-    path = outdir / f"discovery_{timestamp}.json"
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2)
-    return path
-
-def _parse_arp_results(ans) -> List[Dict]:
-    hosts = []
-    for sent, received in ans:
-        ip = received.psrc
-        mac = received.hwsrc
-        hosts.append({"ip": ip, "mac": mac})
-    return hosts
 
 def _arp_discover(subnet: str, timeout: int = 2, verbose: bool = False) -> List[Dict]:
     if not _HAVE_SCAPY:
@@ -58,7 +48,7 @@ def _arp_discover(subnet: str, timeout: int = 2, verbose: bool = False) -> List[
     logger.info("Running ARP discovery with scapy on {}", subnet)
     pkt = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=subnet)
     ans, _ = srp(pkt, timeout=timeout, verbose=0)
-    hosts = _parse_arp_results(ans)
+    hosts = parser.parse(ans)
     logger.info("ARP discovery found {} hosts", len(hosts))
     return hosts
 
@@ -135,7 +125,7 @@ def discover_hosts(subnet: str, prefer_arp: bool = True, save: bool = True) -> D
     }
 
     if save:
-        path = _save_json(result)
+        path = storage.save(result)
         logger.info("Saved discovery results to: {}", path)
 
     return result
