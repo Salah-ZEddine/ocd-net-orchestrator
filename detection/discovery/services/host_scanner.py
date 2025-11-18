@@ -39,7 +39,6 @@ class HostScanner:
                 'operating_system': os_info,
                 'open_ports': open_ports,
                 'port_count': len(open_ports),
-                'status': 'Active'
             }
             
             host_duration = time.time() - host_start_time

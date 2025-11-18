@@ -8,10 +8,9 @@ class Logger:
     def log(self, message, level="INFO", details=None):
         """Enhanced logging with timing and details"""
         timestamp = datetime.now().strftime("%H:%M:%S")
-        elapsed = time.time() - self.start_time
-        elapsed_str = f"[+{elapsed:06.2f}s]"
+       
         
-        log_line = f"{elapsed_str} [{timestamp}] [{level}] {message}"
+        log_line = f" [{level}] {message}"
         
         if details:
             log_line += f" | {details}"
