@@ -1,7 +1,7 @@
 import json
 import time
 from datetime import datetime
-
+import os 
 class ScanOrchestrator:
     def __init__(self, host_discovery, host_scanner, logger, scan_id, subnet):
         self.host_discovery = host_discovery
@@ -13,7 +13,7 @@ class ScanOrchestrator:
     
     def run_scan(self, max_workers=10):
         """Main reliable scanning workflow with detailed progress"""
-        print(f"\n🎯 Starting Reliable Network Scan")
+        print(f"\n Starting Network Scan")
         print("=" * 60)
         
         start_time = time.time()
@@ -26,7 +26,7 @@ class ScanOrchestrator:
             self.logger.log("No active hosts found. Exiting.", "SCAN_EMPTY", "scan complete")
             return None
         
-        print(f"\n📋 Found {len(active_hosts)} confirmed active hosts:")
+        print(f"\n Found {len(active_hosts)} confirmed active hosts:")
         for i, host in enumerate(active_hosts, 1):
             print(f"   {i:2d}. {host}")
         
@@ -79,17 +79,27 @@ class ScanOrchestrator:
                 'failed_scans': failed_scans,
                 'total_open_ports': total_ports,
                 'hosts_with_open_ports': hosts_with_ports,
-                'scan_reliability': 'High - No false positives',
-                'performance_metrics': {
-                    'hosts_per_second': round(len(self.scan_results) / max(scan_duration, 0.1), 2),
-                    'total_hosts_scanned': successful_scans + failed_scans
-                }
+                'total_hosts_scanned': successful_scans + failed_scans
+                
             },
             'network_devices': self.scan_results
         }
         
-        filename = f"network_scan_{self.scan_id}.json"
-        with open(filename, 'w') as f:
+        today = datetime.now()
+        date_dir = today.strftime("%m-%d-%Y")  # Format: 11-19-2025
+        timestamp = today.strftime("%H%M%S")   # Format: 143025 (2:30:25 PM)
+        
+        # Create directory if it doesn't exist
+        logs_dir = "logs"
+        full_dir_path = os.path.join(logs_dir, date_dir)        
+        if not os.path.exists(full_dir_path):
+            os.makedirs(full_dir_path, exist_ok=True)
+            self.logger.log(f"Created directory", "DIR_CREATED", f"path: {full_dir_path}")
+        
+        # Generate filename with timestamp
+        filename = f"scan_{timestamp}.json"
+        full_path = os.path.join(full_dir_path, filename)
+        with open(full_path, 'w') as f:
             json.dump(results, f, indent=2, default=str)
         
         self.print_summary(scan_duration, successful_scans, failed_scans, total_ports, filename)
@@ -97,17 +107,17 @@ class ScanOrchestrator:
     
     def print_summary(self, scan_duration, successful_scans, failed_scans, total_ports, filename):
         """Print scan summary"""
-        print(f"\n🏆 Reliable Scan Complete!")
+        print(f"\nScan Complete!")
         print("=" * 60)
-        print(f"⏱️  Duration: {scan_duration:.2f} seconds")
-        print(f"📡 Subnet: {self.subnet}")
-        print(f"🖥️  Confirmed Hosts: {len(self.scan_results)}")
-        print(f"✅ Successful: {successful_scans} | ❌ Failed: {failed_scans}")
-        print(f"🔓 Total Open Ports: {total_ports}")
-        print(f"💾 Results: {filename}")
+        print(f" Duration: {scan_duration:.2f} seconds")
+        print(f"Subnet: {self.subnet}")
+        print(f" Confirmed Hosts: {len(self.scan_results)}")
+        print(f" Successful: {successful_scans} |  Failed: {failed_scans}")
+        print(f"total Open Ports: {total_ports}")
+        print(f" Results: {filename}")
         
         if self.scan_results:
-            print(f"\n📊 Confirmed Devices:")
+            print(f"\n Confirmed Devices:")
             print("-" * 70)
             for i, device in enumerate(self.scan_results, 1):
                 ports_info = f"{device['port_count']} open ports" if device['port_count'] > 0 else "No open ports"

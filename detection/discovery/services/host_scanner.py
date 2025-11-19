@@ -11,7 +11,7 @@ class HostScanner:
     
     def scan_single_host(self, ip):
         """Complete scan for a single host by orchestrating services"""
-        self.logger.log(f"🚀 Starting comprehensive host scan", "HOST_SCAN_START", f"IP: {ip}")
+        self.logger.log(f" Starting comprehensive host scan", "HOST_SCAN_START", f"IP: {ip}")
         host_start_time = time.time()
         
         try:
@@ -42,13 +42,13 @@ class HostScanner:
             }
             
             host_duration = time.time() - host_start_time
-            self.logger.log(f"✅ Host scan completed", "HOST_SCAN_SUCCESS", 
+            self.logger.log(f" Host scan completed", "HOST_SCAN_SUCCESS", 
                     f"IP: {ip}, duration: {host_duration:.2f}s, ports: {len(open_ports)}")
             
             return host_result
             
         except Exception as e:
             host_duration = time.time() - host_start_time
-            self.logger.log(f"❌ Host scan failed", "HOST_SCAN_ERROR", 
+            self.logger.log(f" Host scan failed", "HOST_SCAN_ERROR", 
                     f"IP: {ip}, duration: {host_duration:.2f}s, error: {e}")
             return None

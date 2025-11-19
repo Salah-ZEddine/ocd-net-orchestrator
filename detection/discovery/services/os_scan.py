@@ -9,7 +9,7 @@ class OSDetector:
     
     def detect_os(self, ip):
         """OS detection with detailed process"""
-        self.logger.log(f"🚀 Starting OS detection", "OS_DETECT_START", f"IP: {ip}")
+        self.logger.log(f"Starting OS detection", "OS_DETECT_START", f"IP: {ip}")
         
         temp_file = f"/tmp/nmap_os_{self.scan_id}_{ip.replace('.', '_')}.xml"
         cmd = f"nmap -O --osscan-guess -T3 {ip} -oX {temp_file}"
