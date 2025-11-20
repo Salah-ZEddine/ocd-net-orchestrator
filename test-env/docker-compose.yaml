@@ -1,0 +1,183 @@
+services:
+  ad01:
+    image: osixia/openldap:1.5.0
+    container_name: ad01
+    hostname: ad01.lab.local
+    environment:
+      LDAP_DOMAIN: "lab.local"
+      LDAP_ORGANISATION: "Lab"
+      LDAP_ADMIN_PASSWORD: "AdminPass123"
+      LDAP_CONFIG_PASSWORD: "ConfigPass123"
+      LDAP_READONLY_USER: "false"
+      LDAP_TLS: "false"
+    volumes:
+      - ./data/openldap:/var/lib/ldap
+      - ./config/openldap:/etc/ldap/slapd.d
+    networks:
+      servers_net:
+        ipv4_address: 10.10.20.10
+    restart: unless-stopped
+
+  filesrv:
+    image: dperson/samba:latest
+    container_name: filesrv
+    hostname: filesrv.lab.local
+    environment:
+      - TZ=UTC
+      - USERID=1000
+      - GROUPID=1000
+    volumes:
+      - ./data/filesrv/finance:/share/finance
+      - ./data/filesrv/hr:/share/hr
+    command: >
+      sh -c "
+        mkdir -p /share/finance /share/hr &&
+        chmod -R 0777 /share &&
+        samba.sh -s 'finance;/share/finance;yes;no;no;all;none' -s 'hr;/share/hr;yes;no;no;all;none' -p
+      "
+    networks:
+      servers_net:
+        ipv4_address: 10.10.20.20
+    ports:
+      - "14445:445"
+      - "1139:139"
+    restart: unless-stopped
+
+  mail:
+    image: namshi/smtp:latest
+    container_name: mail01
+    hostname: mail01.lab.local
+    environment:
+      - MAILNAME=lab.local
+      - RELAY_NETWORKS=10.10.0.0/16
+    networks:
+      servers_net:
+        ipv4_address: 10.10.20.30
+    ports:
+      - "2525:27"
+    restart: unless-stopped
+
+  web-dmz:
+    image: nginx:stable-alpine
+    container_name: web-dmz
+    hostname: web-dmz.lab.local
+    volumes:
+      - ./data/web/html:/usr/share/nginx/html:ro
+    networks:
+      servers_net:
+        ipv4_address: 10.10.20.40
+    ports:
+      - "8080:90"
+    restart: unless-stopped
+
+  ubuntu-user:
+    image: ubuntu:22.04
+    container_name: ubuntu-user
+    hostname: ubuntu-user
+    command: >
+      bash -c "
+        apt-get update -qq >/dev/null 2>&1 &&
+        DEBIAN_FRONTEND=noninteractive apt-get install -y -qq cifs-utils iputils-ping net-tools curl dnsutils >/dev/null 2>&1 &&
+        echo '================================================' &&
+        echo 'Ubuntu User Workstation Ready' &&
+        echo '================================================' &&
+        tail -f /dev/null
+      "
+    networks:
+      users_net:
+        ipv4_address: 10.10.10.12
+    restart: unless-stopped
+
+  win-user:
+    image: alpine:3.18
+    container_name: win-user
+    hostname: win-user
+    command: >
+      sh -c "
+        apk add --no-cache samba-client iputils curl bash >/dev/null 2>&1 &&
+        echo '================================================' &&
+        echo 'Windows User Workstation Ready' &&
+        echo '================================================' &&
+        tail -f /dev/null
+      "
+    networks:
+      users_net:
+        ipv4_address: 10.10.10.11
+    restart: unless-stopped
+
+  management:
+    image: ubuntu:22.04
+    container_name: management
+    hostname: mgmt-station
+    privileged: true
+    command: >
+      /bin/bash -c "
+        apt-get update -qq &&
+        DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+          nmap masscan smbclient smbmap enum4linux \
+          python3-pip python3-dev curl wget iputils-ping \
+          net-tools dnsutils ldap-utils vim nano \
+          >/dev/null 2>&1 &&
+        pip3 install -q xmltodict python-nmap Faker impacket &&
+        clear &&
+        echo '================================================' &&
+        echo '         MANAGEMENT STATION READY               ' &&
+        echo '================================================' &&
+        echo '' &&
+        echo '📡 Networks accessible:' &&
+        echo '   - Users Network: 10.10.10.0/24' &&
+        echo '   - Servers Network: 10.10.20.0/24' &&
+        echo '   - Management Network: 10.10.50.0/24' &&
+        echo '' &&
+        echo '🎯 Key Services:' &&
+        echo '   - AD/LDAP: 10.10.20.10 (port 389)' &&
+        echo '   - File Server (SMB): 10.10.20.20 (port 445)' &&
+        echo '   - Mail Server (SMTP): 10.10.20.30 (port 25)' &&
+        echo '   - Web Server (HTTP): 10.10.20.40 (port 80)' &&
+        echo '' &&
+        echo '👤 User Workstations:' &&
+        echo '   - Ubuntu User: 10.10.10.12' &&
+        echo '   - Windows User: 10.10.10.11' &&
+        echo '' &&
+        echo '🔧 Tools installed:' &&
+        echo '   nmap, masscan, smbclient, smbmap, enum4linux' &&
+        echo '   ldap-utils, python3, impacket' &&
+        echo '' &&
+        echo '================================================' &&
+        echo 'Access: docker exec -it management bash' &&
+        echo '================================================' &&
+        tail -f /dev/null
+      "
+    networks:
+      mgmt_net:
+        ipv4_address: 10.10.50.2
+      users_net:
+        ipv4_address: 10.10.10.254
+      servers_net:
+        ipv4_address: 10.10.20.254
+    restart: unless-stopped
+
+networks:
+  users_net:
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.10.0/24
+
+  servers_net:
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.20.0/24
+
+  mgmt_net:
+    driver: bridge
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.50.0/24
