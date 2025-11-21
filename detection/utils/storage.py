@@ -25,19 +25,19 @@ class JSONStorage:
         self.output_dir.mkdir(exist_ok=True)
 
     def save(self, data: dict) -> Path:
-        """
-        Save data to a timestamped JSON file.
+  
+      now = datetime.utcnow()
 
-        Args:
-            data: Dictionary to save as JSON
+    # Folder name = date
+      day_folder = now.strftime("%Y-%m-%d")
+      folder_path = self.output_dir / day_folder
+      folder_path.mkdir(parents=True, exist_ok=True)
 
-        Returns:
-            Path to the saved file
-        """
-        timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-        path = self.output_dir / f"{self.prefix}_{timestamp}.json"
+    # File name = scan prefix + time
+      time_part = now.strftime("%H%M%SZ")
+      file_path = folder_path / f"{self.prefix}_{time_part}.json"
 
-        with open(path, "w") as f:
-            json.dump(data, f, indent=2)
+      with open(file_path, "w") as f:
+        json.dump(data, f, indent=2)
 
-        return path
+      return file_path
