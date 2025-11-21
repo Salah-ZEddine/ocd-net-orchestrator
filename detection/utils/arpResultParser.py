@@ -90,11 +90,6 @@ class ARPResultParser:
             addresses = nm[ip].get('addresses', {})
             result["mac"] = addresses.get('mac', None)
 
-            # Extract vendor information if available
-            vendor = nm[ip].get('vendor', {})
-            if result["mac"] and result["mac"] in vendor:
-                result["vendor"] = vendor[result["mac"]]
-
             # Extract port information
             for proto in nm[ip].all_protocols():
                 ports = nm[ip][proto].keys()
@@ -106,8 +101,7 @@ class ARPResultParser:
                         "state": port_info.get('state', 'unknown'),
                         "service": port_info.get('name', ''),
                         "product": port_info.get('product', ''),
-                        "version": port_info.get('version', ''),
-                        "extrainfo": port_info.get('extrainfo', '')
+                        "version": port_info.get('version', '')
                     })
 
             # Extract OS information
@@ -115,10 +109,7 @@ class ARPResultParser:
                 # Get the best OS match
                 os_match = nm[ip]['osmatch'][0]
                 result["os"] = os_match.get('name', 'unknown')
-                result["os_accuracy"] = os_match.get('accuracy', 0)
-                logger.debug("OS detection: {} (accuracy: {}%)",
-                             result["os"],
-                             result["os_accuracy"])
+                logger.debug("OS detection: {}", result["os"])
             elif 'osclass' in nm[ip] and nm[ip]['osclass']:
                 # Fallback to OS class
                 os_class = nm[ip]['osclass'][0]
@@ -126,7 +117,6 @@ class ARPResultParser:
                 os_family = os_class.get('osfamily', '')
                 os_gen = os_class.get('osgen', '')
                 result["os"] = f"{os_family} {os_gen}".strip() if os_family else os_type
-                result["os_accuracy"] = os_class.get('accuracy', 0)
                 logger.debug("OS class detection: {}", result["os"])
 
             logger.info("Parsed {} open ports on {} (MAC: {})",
@@ -151,10 +141,8 @@ class ARPResultParser:
         merged = {
             "ip": discovery_host.get("ip"),
             "mac": port_scan_result.get("mac") or discovery_host.get("mac"),
-            "vendor": port_scan_result.get("vendor", ""),
             "ports": port_scan_result.get("ports", []),
-            "os": port_scan_result.get("os", "unknown"),
-            "os_accuracy": port_scan_result.get("os_accuracy", 0)
+            "os": port_scan_result.get("os", "unknown")
         }
 
         return merged

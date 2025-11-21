@@ -93,7 +93,7 @@ def _scan_host_ports(ip: str) -> Dict:
         ip: IP address to scan
 
     Returns:
-        Dict with 'ports', 'os', 'mac', and optional 'vendor' keys
+        Dict with 'ports', 'os', and 'mac' keys
     """
     if not _HAVE_NMAP:
         raise RuntimeError("python-nmap is not available")
@@ -122,8 +122,7 @@ def _scan_host_ports(ip: str) -> Dict:
         return {
             "ports": [],
             "os": "unknown",
-            "mac": None,
-            "os_accuracy": 0
+            "mac": None
         }
 
 
@@ -139,7 +138,7 @@ def discover_hosts(subnet: str, prefer_arp: bool = True, scan_ports: bool = True
 
     Returns:
         Dict with subnet, timestamp, tool, count, and hosts information.
-        Each host contains: ip, mac, ports, os, vendor (if available)
+        Each host contains: ip, mac, ports, os
     """
     # Validate subnet
     try:
@@ -193,10 +192,8 @@ def discover_hosts(subnet: str, prefer_arp: bool = True, scan_ports: bool = True
             hosts.append({
                 "ip": h["ip"],
                 "mac": h.get("mac"),
-                "vendor": "",
                 "ports": [],
-                "os": "unknown",
-                "os_accuracy": 0
+                "os": "unknown"
             })
 
     result = {
